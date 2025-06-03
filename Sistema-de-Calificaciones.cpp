@@ -67,3 +67,33 @@ string leerTexto(string mensaje) {
     getline(cin, texto);
     return texto;
 }
+void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobados) {
+    for (int i = 0; i < n; ++i) {
+        cout << "\n==================== Alumno #" << i + 1 << " ====================\n";
+
+        Alumno alumno;
+
+        cout << "--- Datos Personales ---\n";
+        alumno.nombre = leerTexto("Ingrese primer nombre: ");
+        alumno.apellido1 = leerTexto("Ingrese primer apellido: ");
+        alumno.apellido2 = leerTexto("Ingrese segundo apellido: ");
+        alumno.cedula = leerEnteroPositivo("Ingrese número de cédula: ");
+
+        cout << "--- Notas de Exámenes ---\n";
+        alumno.notas.resize(3);
+        float suma = 0;
+        for (int j = 0; j < 3; ++j) {
+            alumno.notas[j] = leerNota("Nota del examen #" + to_string(j + 1) + ": ");
+            suma += alumno.notas[j];
+        }
+
+        alumno.promedio = suma / 3.0;
+
+        if (alumno.promedio >= 70.0) {
+            aprobados.push_back(alumno);
+        } else {
+            reprobados.push_back(alumno);
+        }
+    }
+}
+//hice procesamiento de lógica y cálculo de promedios
