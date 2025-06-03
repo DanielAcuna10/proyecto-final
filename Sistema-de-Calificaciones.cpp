@@ -105,15 +105,29 @@ void imprimirEncabezadoSeccion(int i) {
 void imprimirReporte(const vector<Alumno>& lista, string estado) {
     cout << "\n==================== " << estado << " ====================\n";
     cout << left << setw(25) << "Nombre completo"
-         << setw(10) << "Ciclo"
          << setw(15) << "Cédula"
          << setw(10) << "Promedio" << "\n";
     cout << "--------------------------------------------------------------\n";
 
     for (const auto& alumno : lista) {
         cout << "> " << left << setw(25) << (alumno.nombre + " " + alumno.apellido1 + " " + alumno.apellido2)
-             << setw(10) << alumno.ciclo
              << setw(15) << alumno.cedula
              << fixed << setprecision(2) << setw(10) << alumno.promedio << "\n";
     }
 }
+//removi el apartado ciclo porque me parece inecesario para el sistema de calificaciones
+int main() {
+    vector<Alumno> aprobados, reprobados;
+    int n = leerEnteroPositivo("¿Cuántos alumnos desea evaluar? ");
+
+    procesarAlumnos(n, aprobados, reprobados); 
+
+    imprimirReporte(aprobados, "APROBADOS");   
+    imprimirReporte(reprobados, "REPROBADOS"); 
+
+return 0;
+
+}
+// Fin del programa
+// hice el vector alumnos y hice la pregunta al usuario de cuantos alumnos desea evaluar
+// hice la función de procesar alumnos y la función de imprimir reporte
