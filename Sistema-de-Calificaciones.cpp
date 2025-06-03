@@ -97,3 +97,23 @@ void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobado
     }
 }
 //hice procesamiento de lógica y cálculo de promedios
+
+void imprimirEncabezadoSeccion(int i) {
+    cout << "\n==================== Alumno #" << i + 1 << " ====================\n";
+}
+
+void imprimirReporte(const vector<Alumno>& lista, string estado) {
+    cout << "\n==================== " << estado << " ====================\n";
+    cout << left << setw(25) << "Nombre completo"
+         << setw(10) << "Ciclo"
+         << setw(15) << "Cédula"
+         << setw(10) << "Promedio" << "\n";
+    cout << "--------------------------------------------------------------\n";
+
+    for (const auto& alumno : lista) {
+        cout << "> " << left << setw(25) << (alumno.nombre + " " + alumno.apellido1 + " " + alumno.apellido2)
+             << setw(10) << alumno.ciclo
+             << setw(15) << alumno.cedula
+             << fixed << setprecision(2) << setw(10) << alumno.promedio << "\n";
+    }
+}
