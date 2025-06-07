@@ -190,7 +190,8 @@ void imprimirEncabezadoSeccion(int i) {
 }
 
 // Aquí imprimo los reportes de los que pasaron y no pasaron
-void imprimirReporte(const vector<Alumno>& lista, string estado) {
+void imprimirReporte(const vector<Alumno>& lista, string estado, const string& color) {
+    cout << color; // Aplica el color
     cout << "\n==================== " << estado << " ====================\n";
     cout << left << setw(25) << "Nombre completo"
          << setw(10) << "Ciclo"
@@ -204,6 +205,7 @@ void imprimirReporte(const vector<Alumno>& lista, string estado) {
              << setw(15) << alumno.cedula
              << fixed << setprecision(2) << setw(10) << alumno.promedio << "\n";
     }
+    cout << "\033[0m"; // Resetea el color
 }
 
 // Aquí inicia todo el programa principal
@@ -213,8 +215,8 @@ int main() {
 
     procesarAlumnos(n, aprobados, reprobados);
 
-    imprimirReporte(aprobados, "APROBADOS");
-    imprimirReporte(reprobados, "REPROBADOS");
+    imprimirReporte(aprobados, "APROBADOS", "\033[32m");   // Verde
+    imprimirReporte(reprobados, "REPROBADOS", "\033[31m"); // Rojo
 
     return 0;
 } 
