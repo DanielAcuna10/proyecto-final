@@ -165,6 +165,17 @@ void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobado
             cout << "Error: Promedio fuera de rango, verifique las notas.\n";
         }
 
+        
+        // Nueva opción para cambiar datos
+        char cambiar;
+        cout << "¿Desea cambiar algo? (s/n): ";
+        cin >> cambiar;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        if (tolower(cambiar) == 's') {
+        cout << "Redirigiendo para corregir los datos...\n";
+        continue; // Vuelve a pedir todos los datos
+        }
+
         // Confirmación antes de guardar el alumno
         char confirmar;
         cout << "¿Desea guardar este alumno? (s/n): ";
