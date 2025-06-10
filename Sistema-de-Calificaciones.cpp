@@ -169,7 +169,7 @@ void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobado
 
             // Nueva opción para cambiar datos
             char cambiar;
-            cout << "¿Desea cambiar algo? (s/n): ";
+            cout << "¿Desea cambiar algún dato? Si elige 's' podrá volver a ingresar todos los datos. (s/n): ";
             cin >> cambiar;
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             if (tolower(cambiar) == 's') {
