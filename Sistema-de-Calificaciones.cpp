@@ -131,60 +131,63 @@ bool cedulaRepetida(int cedula, const vector<Alumno>& aprobados, const vector<Al
 // Aquí se procesan los alumnos uno por uno con validaciones
 void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobados) {
     for (int i = 0; i < n; ++i) {
-        cout << "\n==================== Alumno #" << i + 1 << " ====================\n";
-
         Alumno alumno;
+        bool datosCorrectos = false;
+        while (!datosCorrectos) { // <--- Este ciclo permite volver a ingresar los datos
+            cout << "\n==================== Alumno #" << i + 1 << " ====================\n";
 
-        cout << "--- Datos Personales ---\n";
-        // Ahora uso la función que no permite números en el nombre/apellidos
-        alumno.nombre = leerTextoSinNumeros("Ingrese primer nombre: ");
-        alumno.apellido1 = leerTextoSinNumeros("Ingrese primer apellido: ");
-        alumno.apellido2 = leerTextoSinNumeros("Ingrese segundo apellido: ");
-        alumno.ciclo = leerEnteroPositivo("Ingrese el ciclo que cursa (ej: 1, 2): ");
+            cout << "--- Datos Personales ---\n";
+            // Ahora uso la función que no permite números en el nombre/apellidos
+            alumno.nombre = leerTextoSinNumeros("Ingrese primer nombre: ");
+            alumno.apellido1 = leerTextoSinNumeros("Ingrese primer apellido: ");
+            alumno.apellido2 = leerTextoSinNumeros("Ingrese segundo apellido: ");
+            alumno.ciclo = leerEnteroPositivo("Ingrese el ciclo que cursa (ej: 1, 2): ");
 
-        // Me aseguro que no haya cédulas repetidas y que tengan 9 dígitos
-        do {
-            alumno.cedula = leerCedula("Ingrese número de cédula (9 dígitos): ");
-            if (cedulaRepetida(alumno.cedula, aprobados, reprobados)) {
-                cout << " Error: Esta cédula ya ha sido registrada. Intente otra.\n";
+            // Me aseguro que no haya cédulas repetidas y que tengan 9 dígitos
+            do {
+                alumno.cedula = leerCedula("Ingrese número de cédula (9 dígitos): ");
+                if (cedulaRepetida(alumno.cedula, aprobados, reprobados)) {
+                    cout << " Error: Esta cédula ya ha sido registrada. Intente otra.\n";
+                }
+            } while (cedulaRepetida(alumno.cedula, aprobados, reprobados));
+
+            cout << "--- Notas de Exámenes ---\n";
+            alumno.notas.resize(NUM_NOTAS);
+            float suma = 0;
+            for (int j = 0; j < NUM_NOTAS; ++j) {
+                alumno.notas[j] = leerNota("Nota del examen #" + to_string(j + 1) + ": ");
+                suma += alumno.notas[j];
             }
-        } while (cedulaRepetida(alumno.cedula, aprobados, reprobados));
 
-        cout << "--- Notas de Exámenes ---\n";
-        alumno.notas.resize(NUM_NOTAS);
-        float suma = 0;
-        for (int j = 0; j < NUM_NOTAS; ++j) {
-            alumno.notas[j] = leerNota("Nota del examen #" + to_string(j + 1) + ": ");
-            suma += alumno.notas[j];
-        }
+            alumno.promedio = suma / NUM_NOTAS;
 
-        alumno.promedio = suma / NUM_NOTAS;
+            // Si el promedio sale de rango por algún error, aviso
+            if (alumno.promedio < 0.0 || alumno.promedio > 100.0) {
+                cout << "Error: Promedio fuera de rango, verifique las notas.\n";
+            }
 
-        // Si el promedio sale de rango por algún error, aviso
-        if (alumno.promedio < 0.0 || alumno.promedio > 100.0) {
-            cout << "Error: Promedio fuera de rango, verifique las notas.\n";
-        }
 
-        
-        // Nueva opción para cambiar datos
-        char cambiar;
-        cout << "¿Desea cambiar algo? (s/n): ";
-        cin >> cambiar;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        if (tolower(cambiar) == 's') {
-        cout << "Redirigiendo para corregir los datos...\n";
-        continue; // Vuelve a pedir todos los datos
-        }
+            // Nueva opción para cambiar datos
+            char cambiar;
+            cout << "¿Desea cambiar algo? (s/n): ";
+            cin >> cambiar;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            if (tolower(cambiar) == 's') {
+                cout << "Redirigiendo para corregir los datos...\n";
+                continue; // Vuelve a pedir todos los datos
+            }
 
-        // Confirmación antes de guardar el alumno
-        char confirmar;
-        cout << "¿Desea guardar este alumno? (s/n): ";
-        cin >> confirmar;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        if (tolower(confirmar) != 's') {
-            cout << "Alumno descartado. Reiniciando entrada...\n";
-            --i;
-            continue;
+            // Confirmación antes de guardar el alumno
+            char confirmar;
+            cout << "¿Desea guardar este alumno? (s/n): ";
+            cin >> confirmar;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            if (tolower(confirmar) != 's') {
+                cout << "Alumno descartado. Reiniciando entrada...\n";
+                continue; // Vuelve a pedir todos los datos
+            }
+
+            datosCorrectos = true; // Sale del ciclo si todo está bien
         }
 
         // Según el promedio, lo meto en aprobados o reprobados
