@@ -257,6 +257,116 @@ void imprimirReporte(const vector<Alumno>& lista, string estado, const string& c
     cout << "\033[0m"; // Resetea el color
 }
 
+void buscarPorCedula(const vector<Alumno> &aprobados, const vector<Alumno> &reprobados)
+{
+    string cedulaStr;
+    int cedula = 0;
+    while (true)
+    {
+        cout << "Ingrese la cédula a buscar (exactamente 9 dígitos): ";
+        getline(cin, cedulaStr);
+
+        // Solo acepta si son exactamente 9 caracteres y todos son dígitos
+        if (cedulaStr.length() == 9 && all_of(cedulaStr.begin(), cedulaStr.end(), ::isdigit))
+        {
+            cedula = stoi(cedulaStr);
+            break;
+        }
+        else
+        {
+            cout << "Error: Debe ingresar exactamente 9 dígitos numéricos, sin letras ni espacios.\n";
+        }
+    }
+    auto mostrar = [](const Alumno &a)
+    {
+        cout << "\n--- Alumno encontrado ---\n";
+        cout << "Nombre completo: " << a.nombre << " " << a.apellido1 << " " << a.apellido2 << "\n";
+        cout << "Ciclo: " << a.ciclo << "\n";
+        cout << "Cédula: " << a.cedula << "\n";
+        cout << "Notas:\n";
+        for (size_t i = 0; i < a.notas.size(); ++i)
+            cout << "  Examen #" << (i + 1) << ": " << a.notas[i] << "\n";
+        cout << "Promedio: " << fixed << setprecision(2) << a.promedio << "\n";
+    };
+
+    for (const auto &a : aprobados)
+        if (a.cedula == cedula)
+            return mostrar(a);
+    for (const auto &a : reprobados)
+        if (a.cedula == cedula)
+            return mostrar(a);
+    cout << "No se encontró ningún alumno con esa cédula.\n";
+}
+
+void buscarPorNombre(const vector<Alumno> &aprobados, const vector<Alumno> &reprobados)
+{
+    string nombre, primerapellido, segundoapellido;
+    while (true)
+    {
+        cout << "Ingrese el primer nombre a buscar: ";
+        getline(cin, nombre);
+        cout << "Ingrese el primer apellido a buscar: ";
+        getline(cin, primerapellido);
+        cout << "Ingrese el segundo apellido a buscar: ";
+        getline(cin, segundoapellido);
+
+        bool tieneNumero = false;
+        for (char c : nombre + primerapellido + segundoapellido)
+        {
+            if (isdigit(c))
+            {
+                tieneNumero = true;
+                break;
+            }
+        }
+        if (tieneNumero)
+        {
+            cout << "Error: El nombre o apellido no puede contener números. Intente de nuevo.\n";
+            continue;
+        }
+        if (nombre.empty() || primerapellido.empty() || segundoapellido.empty())
+        {
+            cout << "Error: Todos los campos son obligatorios.\n";
+            continue;
+        }
+        break;
+    }
+
+    string nombreLower = nombre;
+    string apellidoLower = primerapellido + " " + segundoapellido;
+    transform(nombreLower.begin(), nombreLower.end(), nombreLower.begin(), ::tolower);
+    transform(apellidoLower.begin(), apellidoLower.end(), apellidoLower.begin(), ::tolower);
+    bool encontrado = false;
+
+    auto buscarEnLista = [&](const vector<Alumno> &lista)
+    {
+        for (const auto &a : lista)
+        {
+            string nombreCompleto = a.nombre + " " + a.apellido1 + " " + a.apellido2;
+            string nombreCompletoLower = nombreCompleto;
+            transform(nombreCompletoLower.begin(), nombreCompletoLower.end(), nombreCompletoLower.begin(), ::tolower);
+            if (nombreCompletoLower.find(nombreLower) != string::npos &&
+                nombreCompletoLower.find(apellidoLower) != string::npos)
+            {
+                cout << "\n--- Alumno encontrado ---\n";
+                cout << "Nombre completo: " << nombreCompleto << "\n";
+                cout << "Ciclo: " << a.ciclo << "\n";
+                cout << "Cédula: " << a.cedula << "\n";
+                cout << "Notas:\n";
+                for (size_t i = 0; i < a.notas.size(); ++i)
+                    cout << "  Examen #" << (i + 1) << ": " << a.notas[i] << "\n";
+                cout << "Promedio: " << fixed << setprecision(2) << a.promedio << "\n";
+                encontrado = true;
+            }
+        }
+    };
+
+    buscarEnLista(aprobados);
+    buscarEnLista(reprobados);
+
+    if (!encontrado)
+        cout << "No se encontró ningún alumno con ese nombre y apellido.\n";
+}
 // Aquí inicia todo el programa principal
 int main() {
     vector<Alumno> aprobados, reprobados;
