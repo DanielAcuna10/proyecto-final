@@ -167,27 +167,62 @@ void procesarAlumnos(int n, vector<Alumno>& aprobados, vector<Alumno>& reprobado
             }
 
 
-            // Nueva opción para cambiar datos
-            char cambiar;
-            cout << "¿Desea cambiar algún dato? Si elige 's' podrá volver a ingresar todos los datos. (s/n): ";
-            cin >> cambiar;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            if (tolower(cambiar) == 's') {
-                cout << "Redirigiendo para corregir los datos...\n";
-                continue; // Vuelve a pedir todos los datos
-            }
+        // Menú para cambiar datos específicos con validación de opción
+while (true) {
+    cout << "\nResumen de datos ingresados:\n";
+    cout << "1. Nombre: " << alumno.nombre << endl;
+    cout << "2. Primer apellido: " << alumno.apellido1 << endl;
+    cout << "3. Segundo apellido: " << alumno.apellido2 << endl;
+    cout << "4. Ciclo: " << alumno.ciclo << endl;
+    cout << "5. Cédula: " << alumno.cedula << endl;
+    for (int j = 0; j < NUM_NOTAS; ++j) {
+        cout << (6 + j) << ". Nota del examen #" << (j + 1) << ": " << alumno.notas[j] << endl;
+    }
+    int minOpcion = 1;
+    int maxOpcion = 6 + NUM_NOTAS; // Para 5 notas, esto será 11
+    cout << maxOpcion << ". Continuar (no cambiar nada)\n";
 
-            // Confirmación antes de guardar el alumno
-            char confirmar;
-            cout << "¿Desea guardar este alumno? (s/n): ";
-            cin >> confirmar;
+    int opcion;
+    while (true) {
+        cout << "¿Desea cambiar algún dato? Ingrese el número correspondiente o " << maxOpcion << " para continuar: ";
+        cin >> opcion;
+        if (cin.fail() || opcion < minOpcion || opcion > maxOpcion) {
+            cout << "Opción inválida. Debe ingresar un número entre " << minOpcion << " y " << maxOpcion << ". Intente de nuevo.\n";
+            cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            if (tolower(confirmar) != 's') {
-                cout << "Alumno descartado. Reiniciando entrada...\n";
-                continue; // Vuelve a pedir todos los datos
-            }
+            continue;
+        }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        break;
+    }
 
-            datosCorrectos = true; // Sale del ciclo si todo está bien
+    if (opcion == 1) {
+        alumno.nombre = leerTextoSinNumeros("Ingrese primer nombre: ");
+    } else if (opcion == 2) {
+        alumno.apellido1 = leerTextoSinNumeros("Ingrese primer apellido: ");
+    } else if (opcion == 3) {
+        alumno.apellido2 = leerTextoSinNumeros("Ingrese segundo apellido: ");
+    } else if (opcion == 4) {
+        alumno.ciclo = leerEnteroPositivo("Ingrese el ciclo que cursa (ej: 1, 2): ");
+    } else if (opcion == 5) {
+        do {
+            alumno.cedula = leerCedula("Ingrese número de cédula (9 dígitos): ");
+            if (cedulaRepetida(alumno.cedula, aprobados, reprobados)) {
+                cout << " Error: Esta cédula ya ha sido registrada. Intente otra.\n";
+            }
+        } while (cedulaRepetida(alumno.cedula, aprobados, reprobados));
+    } else if (opcion >= 6 && opcion < maxOpcion) {
+        int notaIdx = opcion - 6;
+        alumno.notas[notaIdx] = leerNota("Nota del examen #" + to_string(notaIdx + 1) + ": ");
+        // Recalcular promedio
+        float sumaNotas = 0;
+        for (float n : alumno.notas) sumaNotas += n;
+        alumno.promedio = sumaNotas / NUM_NOTAS;
+    } else if (opcion == maxOpcion) {
+        datosCorrectos = true;
+        break;
+    }
+}
         }
 
         // Según el promedio, lo meto en aprobados o reprobados
