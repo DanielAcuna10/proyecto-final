@@ -377,6 +377,30 @@ int main() {
     imprimirReporte(aprobados, "APROBADOS", "\033[32m");   // Verde
     imprimirReporte(reprobados, "REPROBADOS", "\033[31m"); // Rojo
 
+    char opcionBusqueda;
+    cout << "\n¿Desea buscar un alumno por cédula o nombre? (c = cedula, n = nombre, s = para salir): ";
+    cin >> opcionBusqueda;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    while (opcionBusqueda != 's')
+    {
+        if (opcionBusqueda == 'c')
+        {
+            buscarPorCedula(aprobados, reprobados);
+        }
+        else if (opcionBusqueda == 'n')
+        {
+            buscarPorNombre(aprobados, reprobados);
+        }
+        else
+        {
+            cout << "Opción inválida.\n";
+        }
+
+        cout << "\n¿Desea hacer otra búsqueda? (c = cédula, n = nombre, s = salir): ";
+        cin >> opcionBusqueda;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
     return 0;
 } 
 // Fin del programa
